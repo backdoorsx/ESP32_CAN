@@ -1,0 +1,566 @@
+<html>
+   
+<head>
+      
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   
+</head><style type="text/css">
+		  a {font-size:10pt;font-family:arial;}
+		  a:hover {color:red;}
+		  a.nounderline {font-size:10pt;font-family:arial;text-decoration:none;color:blue;}
+		  a.small {color:blue;font-size:9pt;font-family:arial;}
+		  a.bookinfosmall {font-size:8pt;font-family:arial;text-decoration:none;color:black;}
+		  a.red {font-family:arial;color:red;font-size:12pt}
+		  b {font-size:10pt;font-family:arial;}
+		  b.small {font-size:9pt;font-family:arial;}
+		  body {margin-top:1em;margin-right:1em;margin-left:1em;font-family:arial;background-color:FFFFFF;}
+		  b.bold {font-weight:bold;font-size:10pt;font-family:arial;}
+		  b.underline {font-weight:normal;font-size:10pt;font-family:arial;text-decoration:underline}
+		  b.boldunderline {font-weight:bold;font-size:10pt;font-family:arial;text-decoration:underline}
+		  caption {font-size:10pt;font-family:arial;font-weight:bold;text-align:left;}
+		  center {font-size:10pt;font-family:arial;}
+		  center.small {font-size:9pt;font-family:arial;}
+		  div {font-size:10pt;font-family:arial;}
+		  div.bold {font-weight:bold}
+		  div.bookinfo {font-style:italic;font-size:9pt;font-family:arial;}
+		  div.bookinfosmall {font-size:8pt;font-family:arial;}
+		  div.figcaption {font-style:italic;margin-bottom:.5em;font-size:10pt;font-family:arial;}
+		  div.indent3 {font-size:10pt;margin-left:3.5em;}
+		  div.ppttitle {font-size:15pt;font-family:arial;font-weight:bold;margin-bottom:.2em;margin-top:.2em;}
+		  div.proctitle {font-size:15pt;font-family:arial;font-weight:bold;margin-bottom:.4em;margin-top:.4em;}
+		  div.proctitlecenter {text-align:center;font-size:15pt;font-family:arial;font-weight:bold;margin-bottom:.4em;margin-top:.4em;}
+		  div.procsubtitle {font-size:13pt;font-family:arial;font-weight:bold;margin-bottom:.4em;margin-bottom:.4em;margin-top:.4em;}
+		  div.question {font-weight:bold;margin-bottom:.5em;margin-top:.5em;font-size:10pt;font-family:arial;}
+		  div.wrap {float:right}
+		  div.scroll {padding-left: 5px; border:1px solid; width:1000px; height:200px; overflow:auto;}
+		  div.noscroll {padding-left: 5px; border:1px solid; width:1000px;}
+		  font.red {font-size:9pt;font-family:arial;color:red}
+		  h1 {font-family:arial;}
+		  h1.center {font-family:arial;text-align:center;}
+		  h1.red {font-family:arial;color:red;font-size:18pt}
+		  h2 {font-family:arial;}
+		  h2.center {font-family:arial;text-align:center;}
+		  h2.red {color:red;text-align:center;font-size:16pt;font-family:arial;}
+		  h3 {font-family:arial;}
+		  h3.center {font-family:arial;text-align:center;}
+		  h3.nospace {font-family:arial;margin-top:0em;margin-bottom:.4em;}
+		  h3.red {font-family:arial;color:red;font-size:12pt}
+		  h4 {font-family:arial;}
+		  h4.testgrptitle {margin-top:2em;font-family:arial;}
+		  h5 {font-family:arial;}
+		  hr {color:#000000}
+		  hr.blue {color:blue;height:8pt}
+		  hr.red {color:red;height:8pt}
+		  hr.green {color:green;height:8pt}
+		  hr.purple {color:purple;height:8pt}
+		  i {font-size:10pt;font-family:arial;}
+		  li {font-size:10pt;font-family:arial;}
+		  li.nobullet {font-size:10pt;font-family:arial;list-style:none;}
+		  ol {font-size:10pt;font-family:arial;}
+		  ol.a {list-style:lower-alpha;font-size:10pt;font-family:arial;}
+		  ol.uppera {list-style:upper-alpha;font-size:10pt;font-family:arial;}
+		  p {font-size:10pt;font-family:arial;}
+		  p.alignr {font-size:10pt;font-family:arial;text-align:right;}
+		  p.2pttop {font-size:10pt;font-family:arial;margin-top:.2em;}
+		  p.nobottom {font-size:10pt;font-family:arial;margin-bottom:0em;}
+		  p.caption {margin-top:.2em;text-align:center;font-size:8pt;font-family:arial;}
+		  p.center {text-align:center;font-size:10pt;font-family:arial;}
+		  p.center3 {text-align:center;font-size:11pt;font-family:arial;font-weight:bold;}
+		  p.center4 {text-align:center;font-size:12pt;font-family:arial;font-weight:bold;}
+		  p.center5 {text-align:center;font-size:13pt;font-family:arial;font-weight:bold;}
+		  p.copyright {font-size:7pt;font-family:arial;margin-bottom:.4em;margin-top:.4em;text-align:center}
+		  p.footnote {font-size:9pt;font-family:arial;margin-bottom:0em;margin-top:0em;margin-left:2em;}
+		  p.font5 {font-size:15pt;font-family:arial;font-weight:bold;}
+		  p.font4 {font-size:13pt;font-family:arial;font-weight:bold;}
+		  p.font3 {font-size:12pt;font-family:arial;font-weight:bold;}
+		  p.font2 {font-size:11pt;font-family:arial;font-weight:bold;}
+		  p.indent {font-size:10pt;font-family:arial;margin-left:1.5em;margin-bottom:.4em;margin-top:.4em;}
+		  p.nospace {margin-top:.4em;margin-bottom:.4em;font-size:9pt;font-family:arial;}
+		  p.singlespace {margin-top:.4em;margin-bottom:.4em;font-size:10pt;font-family:arial;}
+		  p.smallnospace {margin-top:.4em;margin-bottom:.4em;font-size:8pt;font-family:arial;}
+		  span.popup {cursor: help; text-decoration: underline; font-size: 10pt; font-family: arial;}
+		  span.popupnounderline {cursor: help; font-size: 10pt; font-family: arial;}
+		  span.small {font-size:7pt;font-family:arial;}
+		  sup {font-size:9pt;font-family:arial;}
+		  sub {font-size:9pt;font-family:arial;}
+		  td {font-size:10pt;font-family:arial;}
+		  td.gray {font-family:arial;background-color:lightgray;}
+		  td.blue {font-family:arial;background-color:blue;height:1px;}
+		  th {font-size:10pt;font-family:arial;background-color:lightgray;}
+		  title {font-size:10pt;font-family:arial;}
+		  tr {font-size:10pt;font-family:arial;}
+		  u {font-size:10pt;font-family:arial;}
+		  ul {font-size:10pt;font-family:arial;}
+		  ul.dash {font-size:10pt;font-family:arial;list-style-image:url(DASH.JPG);}
+		  ul.square {font-size:10pt;font-family:arial;list-style-image: url(SQUARE.JPG);}
+		  ul.nospace {margin-left:1em;margin-top:0em;margin-bottom:.1em;font-size:10pt;font-family:arial;list-style:disc;padding-left:0px;}
+		  ul.subnospace {margin-left:3em;margin-top:0em;margin-bottom:.1em;font-size:10pt;font-family:arial;list-style:disc;padding-left:0px;}
+		  ul.none {margin-top:.4em;margin-bottom:.4em;font-size:10pt;font-family:arial;list-style:none}
+		  ul.singlespace {font-size:10pt;font-family:arial;margin-top:.2em;margin-bottom:.2em;}  
+    
+</style><meta name="tps_type" content="workshop">
+   
+<meta name="tps_bookcode" content="SER">
+   
+<meta name="tps_market" content="US">
+   
+<meta name="tps_language" content="EN">
+   
+<meta name="tps_year" content="2014">
+   
+<meta name="tps_modelname" content="Fiesta">
+   
+<meta name="tps_system" content="3">
+   
+<meta name="tps_group" content="08">
+   
+<meta name="tps_section" content="03B">
+   
+<meta name="tps_section_title" content="Manual Transmission - Vehicles With: 6-Speed Manual Transmission - B6">
+   
+<meta name="tps_ss_title" content="Specifications">
+   
+<meta name="tps_procid" content="G1601950">
+   
+<meta name="tps_procsgmlid" content="">
+   
+<table cellspacing="0" cellpadding="2" width="100%">
+      
+<tr valign="top">
+         
+<td><i>308-03B&nbsp;Manual Transmission - Vehicles With: 6-Speed Manual Transmission - B6
+</i></td>
+         
+<td align="right"><i>2014 Fiesta
+</i></td>
+      
+</tr>
+      
+<tr>
+         
+<td><i>Specifications
+</i></td>
+         
+<td align="right"><i>Procedure revision date:
+               04/24/2013
+               
+</i></td>
+      
+</tr>
+   
+</table>
+   
+<hr>
+   
+<meta name="tps_proctitle" content="Specifications">
+   
+<h1>
+      
+<center>Specifications
+</center>
+   
+</h1>
+   
+<br><br>
+   
+   
+<p class="singlespace"><b>
+         &nbsp;
+         Filling Capacities
+</b></p>
+   
+<br><table cellspacing="0" cellpadding="3" border="1" width="100%">
+      
+<colgroup>
+         
+<col align="left">
+         
+<col align="center">
+         
+<col align="center">
+      
+</colgroup>
+      
+      
+      
+      
+      
+<thead valign="bottom">
+         
+         
+<tr>
+            
+            
+<th rowspan="1" align="center" valign="top">
+               6-Speed Manual Transaxle - B6 
+               
+            
+</th>
+            
+            
+<th rowspan="1" align="center" valign="top">
+               Specifications
+               
+            
+</th>
+            
+            
+<th rowspan="1" align="center" valign="top">
+               Litres 
+               
+            
+</th>
+            
+         
+</tr>
+         
+      
+</thead>
+      
+      
+<tbody valign="top">
+         
+         
+<tr>
+            
+            
+<td align="center" valign="top">
+               Motorcraft® Dual Clutch Transmission Fluid  XT-11-QDC
+               
+            
+</td>
+            
+            
+<td align="center" valign="top">
+               WSS-M2C200-D2
+               
+            
+</td>
+            
+            
+<td align="center" valign="top">
+               1.67 (Dry fill)
+               
+            
+</td>
+            
+         
+</tr>
+         
+      
+</tbody>
+      
+   
+</table><br>
+   
+<br>
+   
+<br><br>
+   
+   
+<p class="singlespace"><b>
+         &nbsp;
+         Transmission Ratios
+</b></p>
+   
+<br><table cellspacing="0" cellpadding="3" border="1" width="100%">
+      
+<colgroup>
+         
+<col align="left">
+         
+<col>
+      
+</colgroup>
+      
+      
+      
+      
+<thead valign="bottom">
+         
+         
+<tr>
+            
+            
+<th rowspan="1" align="left" valign="top">
+               Gears
+               
+            
+</th>
+            
+            
+<th align="center" valign="top">
+               1.6L EcoBoost - Sigma
+               
+            
+</th>
+            
+         
+</tr>
+         
+      
+</thead>
+      
+      
+<tbody valign="top">
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               1st gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               3.727
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               2nd gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               2.048
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               3rd gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               1.357
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               4th gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               1.032
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               5th gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               0.821
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td align="left" valign="top">
+               6th gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               0.690
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               Reverse gear
+               
+            
+</td>
+            
+            
+<td valign="top">
+               3.818
+               
+            
+</td>
+            
+         
+</tr>
+         
+         
+<tr>
+            
+            
+<td rowspan="1" align="left" valign="top">
+               Final drive
+               
+            
+</td>
+            
+            
+<td valign="top">
+               3.824
+               
+            
+</td>
+            
+         
+</tr>
+         
+      
+</tbody>
+      
+   
+</table><br>
+   
+<br>
+   
+<br><br>
+   
+   
+<p class="singlespace"><b>
+         &nbsp;
+         Shim thickness required
+</b></p>
+   
+<br><table cellspacing="0" cellpadding="3" border="1" width="100%">
+      
+<colgroup>
+         
+<col align="left">
+         
+<col align="center">
+      
+</colgroup>
+      
+      
+      
+      
+<thead valign="bottom">
+         
+         
+<tr>
+            
+            
+<th rowspan="1" align="center" valign="top">
+               Type
+               
+            
+</th>
+            
+            
+<th rowspan="1" align="center" valign="top">
+               Differential
+               
+            
+</th>
+            
+         
+</tr>
+         
+      
+</thead>
+      
+      
+<tbody valign="top">
+         
+         
+<tr>
+            
+            
+<td rowspan="1" valign="top">
+               Available shims (mm)
+               
+            
+</td>
+            
+            
+<td rowspan="1" valign="top">
+               
+               
+               0.00
+               &nbsp;in (
+               .1
+               &nbsp;mm) - 
+               0.04
+               &nbsp;in (
+               1.1
+               &nbsp;mm) (Available in 0.10 mm increments)                        
+               
+            
+</td>
+            
+         
+</tr>
+         
+      
+</tbody>
+      
+   
+</table><br>
+   
+<br>
+   
+<br><br><p class="copyright">Copyright ©  Ford Motor Company
+</p>
+   
+<hr>
+
+</html>
