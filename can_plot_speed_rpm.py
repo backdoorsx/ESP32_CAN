@@ -3,6 +3,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
 
 def sort_can_counts(data_dict):
@@ -85,21 +86,30 @@ def plot_rpm_from_bytes(data, scale=1.0):
 
 #neviem 2a3 6a7
 def plot_23_from_bytes(data, scale=1.0):
-
+    '''
+    break = 0x0000020F
+    d2 = int(frame[1], 16)
+    d3 = int(frame[2], 16)
+    '''
     rpm_raw = []
+    times_ms = []
     
     for frame in data:
-        d2 = int(frame[3], 16)
-        d3 = int(frame[4], 16)
+        cas_v_ms = int(frame[0])# - 89509
+        d2 = int(frame[3], 16) # 
+        d3 = int(frame[4], 16) #
 
         val = (d2 << 8) | d3
         rpm_raw.append(val)
+        times_ms.append(cas_v_ms)
 
     rpm_raw = np.array(rpm_raw)
     rpm_scaled = rpm_raw
+    
+    x = np.array(times_ms)
 
-    x = np.arange(len(rpm_raw))
-
+    #x = np.arange(len(rpm_raw))
+    
     plt.figure(figsize=(14, 6))
     plt.plot(x, rpm_scaled, linewidth=1.8, color="blue", label=f"RPM (scale = {scale})")
     plt.plot(x, rpm_raw, linewidth=1.2, color="gray", alpha=0.5, label="Raw DEC")
@@ -107,7 +117,19 @@ def plot_23_from_bytes(data, scale=1.0):
     plt.title("unknown – d2+d3 → DEC")
     plt.xlabel("Index vzorky")
     plt.ylabel("RPM")
-    plt.grid(True)
+    
+    # Vlastné xticks – hustejšia mriežka každých 100 ms
+    x_start = x[0]
+    x_end = x[-1]
+    #plt.xticks(np.arange(x_start, x_end + 1, 250))  # krok 100 ms
+    plt.xticks(np.arange(x_start, x_end + 1, 1000), rotation=90)
+
+##    # Vlastné yticks – každých 500 RPM
+##    y_min = int(np.min(rpm_scaled) // 100 * 100)
+##    y_max = int(np.max(rpm_scaled) // 100 * 100 + 100)
+##    plt.yticks(np.arange(y_min, y_max + 1, 100))
+
+    plt.grid(True, linestyle='--', alpha=0.5)
     plt.legend()
     plt.tight_layout()
     plt.show()
@@ -151,7 +173,7 @@ def plot_obd8_hex_time(data):
         borderpad=1.0
     )
 
-    for line, legline in zip(lines, leg.get_lines()):
+    for line, legline in zip(lines, leg.get_texts()):
         legline.set_picker(True)
         legline._linked_line = line
 
@@ -173,7 +195,7 @@ def plot_obd8_hex_time(data):
     plt.show()
 
 if 1 == 1:
-    data_log = 'canex.csv'
+    data_log = 'canex_map_24_2000rpm.csv'
 
     with open(data_log, 'r') as f:
         data = f.readlines()
@@ -198,20 +220,21 @@ if 1 == 1:
     for line in data:
         line = line.replace('\n','')
         line = line.split(',')
-        if '0x00000201' == line[1]:
+        if '0x00000268' == line[1]:
             datax.append([line[0],line[4],line[5],line[6],line[7],line[8],line[9],line[10],line[11]])
 
-##    with open('speed_0x201.log', 'w') as f:
+##    with open('speed_0x201.log', 'w') as f: 
 ##        f.write(str(datax))
 ##        
-    #datax = datax[:20000]
-##    print(datax[0])
-##    print(datax[-1])
-    #plot_23_from_bytes(datax)
-    #plot_obd8_hex_time(datax)
+    datax = datax[-2000:]
+    print(datax[0])
+    print(datax[-1])
 
-    plot_rpm_from_bytes(datax)
-    #plot_speed_from_frames(datax)
+    plot_23_from_bytes(datax)
+    plot_obd8_hex_time(datax)
+
+    #plot_rpm_from_bytes(datax) #0x00000201
+    #plot_speed_from_frames(datax) #0x00000201
 
 ##    d5 = []
 ##    for data in datax:
@@ -227,4 +250,6 @@ if 1 == 1:
     # SPEED = 0x0000020F d[2]
     # SPEED = 0x0000020E d[0]
     # ECU SPEED/RPM = 0x00000201 d[0] a d[4]
+
+    # plyn pedal = 0x000000FD
 
