@@ -174,6 +174,7 @@ def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
 def all_plot_from_bytes(data, scale=1.0, tickx=1000):
     for i in range(7):
         plot_from_bytes(data, scale, i, i+1, tickx)
+        sleep(0.1)
     
 # ---------------------------------------------------------
 #  TKINTER GUI – LEFT PANEL WITH ID LIST
