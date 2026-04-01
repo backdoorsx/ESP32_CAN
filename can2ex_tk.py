@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
 import numpy as np
+from time import sleep
 
 # ---------------------------------------------------------
 #  YOUR MATPLOTLIB DARK THEME SETTINGS (unchanged)
@@ -151,7 +152,7 @@ def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
     plt.plot(x, rpm_scaled, linewidth=1.8, color="blue", label=f"RPM (scale = {scale})")
     plt.plot(x, rpm_raw, linewidth=1.2, color="gray", alpha=0.5, label="Raw DEC")
 
-    plt.title("unknown – abit+bbit → DEC")
+    plt.title(f"unknown – bit{abit}+bit{bbit} → DEC")
     plt.xlabel("Index vzorky")
     plt.ylabel("-")
     
@@ -170,7 +171,10 @@ def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
     plt.tight_layout()
     plt.show()
     
-
+def all_plot_from_bytes(data, scale=1.0, tickx=1000):
+    for i in range(7):
+        plot_from_bytes(data, scale, i, i+1, tickx)
+    
 # ---------------------------------------------------------
 #  TKINTER GUI – LEFT PANEL WITH ID LIST
 # ---------------------------------------------------------
@@ -182,7 +186,7 @@ def start_gui(data):
 
     window = tk.Tk()
     window.title("CAN Log Viewer")
-    window.geometry("480x800")
+    window.geometry("420x800")
     window.configure(bg="#222222")
 
     # --- CHECKBOX PANEL ---
@@ -203,7 +207,6 @@ def start_gui(data):
         cb.grid(row=0, column=i, padx=3)
         byte_vars.append(var)
 
-    
     # --- SCALE (v jednom riadku) ---
     scale_frame = tk.Frame(window, bg="#222222")
     scale_frame.pack(pady=3)
@@ -212,8 +215,6 @@ def start_gui(data):
     scale_entry = tk.Entry(scale_frame, width=8)
     scale_entry.insert(0, "1.0")
     scale_entry.pack(side=tk.LEFT, padx=5)
-
-
     
     # --- TICKX (v jednom riadku) ---
     tick_frame = tk.Frame(window, bg="#222222")
@@ -268,6 +269,9 @@ def start_gui(data):
             # 2 checkboxes → new function
             abit, bbit = selected_bits
             plot_from_bytes(filtered, scale=scale, abit=abit, bbit=bbit, tickx=tickx)
+        elif len(selected_bits) == 8:
+            # all checkboxes
+            all_plot_from_bytes(filtered, scale=scale, tickx=tickx)
         else:
             print("Vyber 0 alebo 2 D-bajty (b0..b7).")
 
