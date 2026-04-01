@@ -203,17 +203,27 @@ def start_gui(data):
         cb.grid(row=0, column=i, padx=3)
         byte_vars.append(var)
 
-    # --- SCALE ---
-    tk.Label(window, text="Scale:", fg="white", bg="#222222").pack()
-    scale_entry = tk.Entry(window)
-    scale_entry.insert(0, "1.0")
-    scale_entry.pack()
+    
+    # --- SCALE (v jednom riadku) ---
+    scale_frame = tk.Frame(window, bg="#222222")
+    scale_frame.pack(pady=3)
 
-    # --- TICK X ---
-    tk.Label(window, text="TickX:", fg="white", bg="#222222").pack()
-    tick_entry = tk.Entry(window)
+    tk.Label(scale_frame, text="Scale:", fg="white", bg="#222222").pack(side=tk.LEFT)
+    scale_entry = tk.Entry(scale_frame, width=8)
+    scale_entry.insert(0, "1.0")
+    scale_entry.pack(side=tk.LEFT, padx=5)
+
+
+    
+    # --- TICKX (v jednom riadku) ---
+    tick_frame = tk.Frame(window, bg="#222222")
+    tick_frame.pack(pady=3)
+
+    tk.Label(tick_frame, text="TickX:", fg="white", bg="#222222").pack(side=tk.LEFT)
+    tick_entry = tk.Entry(tick_frame, width=8)
     tick_entry.insert(0, "1000")
-    tick_entry.pack()
+    tick_entry.pack(side=tk.LEFT, padx=5)
+
 
     # --- LIST OF IDs ---
     tk.Label(window, text="CAN ID:", fg="white", bg="#222222",
