@@ -3,8 +3,7 @@
 #  CAN LOG VIEWER – TKINTER GUI
 # -----------------------------
 #  Left side = list of CAN IDs
-#  Click ID = opens matplotlib window with plot_obd8_hex_time()
-#  Fully compatible with your code and matplotlib theme
+#  Click ID = opens matplotlib window
 # -----------------------------
 # +--------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+
 # | ID     | Byte 0               | Byte 1               | Byte 2               | Byte 3               | Byte 4               | Byte 5               | Byte 6               | Byte 7               |
@@ -31,7 +30,7 @@ import numpy as np
 from time import sleep
 
 # ---------------------------------------------------------
-#  YOUR MATPLOTLIB DARK THEME SETTINGS (unchanged)
+# MATPLOTLIB DARK THEME SETTINGS
 # ---------------------------------------------------------
 
 plt.style.use('dark_background')
@@ -74,7 +73,6 @@ def filter_frames_by_id(data, selected_id):
     output = []
     for row in data:
         if row[1] == selected_id:
-            # extrakcia presne ako vo tvojom kóde
             output.append([
                 row[0], row[4], row[5], row[6],
                 row[7], row[8], row[9], row[10], row[11]
@@ -83,7 +81,7 @@ def filter_frames_by_id(data, selected_id):
 
 
 # ---------------------------------------------------------
-#  YOUR ORIGINAL MATPLOTLIB FUNCTION (MINOR FIX: show())
+#  YOUR ORIGINAL MATPLOTLIB FUNCTION
 # ---------------------------------------------------------
 
 def plot_hex(data):
