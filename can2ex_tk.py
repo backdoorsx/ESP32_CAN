@@ -6,6 +6,23 @@
 #  Click ID = opens matplotlib window with plot_obd8_hex_time()
 #  Fully compatible with your code and matplotlib theme
 # -----------------------------
+# +--------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+
+# | ID     | Byte 0               | Byte 1               | Byte 2               | Byte 3               | Byte 4               | Byte 5               | Byte 6               | Byte 7               |
+# +--------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+
+# | 0x80   |         this /10 = steering angle           |                      |                      |                      |                      |                      |                      |
+# | 0x190  |           this /10 = throttle               | brake status         |                      |                      |                      |                      |                      |
+# | 0x200  |                      |                      |                      |                      | idk                  |                      |                      |                      |
+# | 0x201  |                     rpm                     | torque               |                      |                Speed (km/h) * 0.01          |  gas_percent_pedal = gas*100/50944          |
+# | 0x205  |           fuel injection rate               |                      |                      |                      |                      |                      |                      |
+# | 0x240  |                      | engine running       |                      |                      |                      |                      |                      |                      |
+# | 0x420  | this -40 = coolant   |                      |                      |                      |                      |                      |                      |                      |
+# | 0x424  |                      |                      |      MAP             | fuel injection rate? |                      |                      |                      |                      |
+# | 0x430  | this /2.55 = fuel(l) |                      |                      |                      |                      |                      |                      |                      |
+# | 0x433  | door status          |                      |                      | reverse / handbrake  |                      |                      |                      |                      |
+# | 0x4B0  |               LF wheel speed                |              RF wheel speed                 |              LR wheel speed                 |              RR wheel speed                 |
+# | 0x4E3  |                      |                      |                      | idk                  |                      |                      |                      |                      |
+# | 0x4F2  |                            Odometer (km)                           |                      |                      |                      |                      |                      |
+# +--------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+----------------------+
 
 import tkinter as tk
 from tkinter import ttk
@@ -71,6 +88,8 @@ def filter_frames_by_id(data, selected_id):
 
 def plot_hex(data):
 
+    print(data[0])
+    print(data[-1])
     arr = np.array(data)
 
     if arr.shape[1] != 9:
@@ -126,10 +145,51 @@ def plot_hex(data):
 
     plt.show()
 
-def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
+def plot_from_byte(data, scale=1.0, abit=1, offset=0.0, tickx=1000):
+
+    rpm_raw = []
+    times_ms = []
+    print(f'plot_from_byte(data, {scale}, {abit}, {tickx})')
+    for frame in data:
+        cas_v_ms = int(frame[0])
+        val = int(frame[abit+1], 16)
+
+        rpm_raw.append(val)
+        times_ms.append(cas_v_ms)
+
+    rpm_raw = np.array(rpm_raw)
+    rpm_scaled = (rpm_raw * scale) + offset
+    
+    x = np.array(times_ms)
+    
+    plt.figure(figsize=(14, 6))
+    plt.plot(x, rpm_scaled, linewidth=1.8, color="blue", label=f"RPM (scale = {scale})")
+    plt.plot(x, rpm_raw, linewidth=1.2, color="gray", alpha=0.5, label="Raw DEC")
+
+    plt.title(f"unknown – bit{abit} → DEC")
+    plt.xlabel("Index vzorky")
+    plt.ylabel("-")
+    
+    # Vlastné xticks – hustejšia mriežka každých 100 ms
+    x_start = x[0]
+    x_end = x[-1]
+    plt.xticks(np.arange(x_start, x_end + 1, tickx), rotation=90)
+
+##    # Vlastné yticks – každých 500 RPM
+##    y_min = int(np.min(rpm_scaled) // 100 * 100)
+##    y_max = int(np.max(rpm_scaled) // 100 * 100 + 100)
+##    plt.yticks(np.arange(y_min, y_max + 1, 100))
+
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.legend()
+    plt.tight_layout()
+    plt.show()
+
+def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, offset=0.0, tickx=1000):
     '''
     rpm real = 0x201 (d0 << 8) | d1
     speed real = 0x201 (d4 << 8) | d5 / 100
+    value = (byte0 << 16) | (byte1 << 8) | byte2
     '''
     rpm_raw = []
     times_ms = []
@@ -138,13 +198,13 @@ def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
         cas_v_ms = int(frame[0])
         d2 = int(frame[abit+1], 16)
         d3 = int(frame[bbit+1], 16)
-
+        
         val = (d2 << 8) | d3
         rpm_raw.append(val)
         times_ms.append(cas_v_ms)
 
     rpm_raw = np.array(rpm_raw)
-    rpm_scaled = rpm_raw * scale
+    rpm_scaled = (rpm_raw * scale) + offset
     
     x = np.array(times_ms)
     
@@ -169,11 +229,60 @@ def plot_from_bytes(data, scale=1.0, abit=1, bbit=2, tickx=1000):
     plt.grid(True, linestyle='--', alpha=0.5)
     plt.legend()
     plt.tight_layout()
+    #plt.show()
+    plt.show(block=False)
+
+def plot_from_3bytes(data, scale=1.0, abit=1, bbit=2, cbit=3, tickx=1000):
+    '''
+    rpm real = 0x201 (d0 << 8) | d1
+    speed real = 0x201 (d4 << 8) | d5 / 100
+    value = (byte0 << 16) | (byte1 << 8) | byte2
+    '''
+    rpm_raw = []
+    times_ms = []
+    print(f'plot_from_bytes(data, {scale}, {abit}, {bbit}, {cbit}, {tickx})')
+    for frame in data:
+        cas_v_ms = int(frame[0])
+        d2 = int(frame[abit+1], 16)
+        d3 = int(frame[bbit+1], 16)
+        d4 = int(frame[cbit+1], 16)
+        
+        val = (d2 << 16) | (d3 << 8) | d4
+        
+        rpm_raw.append(val)
+        times_ms.append(cas_v_ms)
+
+    rpm_raw = np.array(rpm_raw)
+    rpm_scaled = rpm_raw * scale
+    
+    x = np.array(times_ms)
+    
+    plt.figure(figsize=(14, 6))
+    plt.plot(x, rpm_scaled, linewidth=1.8, color="blue", label=f"RPM (scale = {scale})")
+    plt.plot(x, rpm_raw, linewidth=1.2, color="gray", alpha=0.5, label="Raw DEC")
+
+    plt.title(f"unknown – bit{abit}+bit{bbit}+bit{cbit} → DEC")
+    plt.xlabel("Index vzorky")
+    plt.ylabel("-")
+    
+    # Vlastné xticks – hustejšia mriežka každých 100 ms
+    x_start = x[0]
+    x_end = x[-1]
+    plt.xticks(np.arange(x_start, x_end + 1, tickx), rotation=90)
+
+    # Vlastné yticks – každých 500
+    y_min = int(np.min(rpm_scaled) // 100 * 100)
+    y_max = int(np.max(rpm_scaled) // 100 * 100 + 100)
+    plt.yticks(np.arange(y_min, y_max + 1, 100))
+
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.legend()
+    plt.tight_layout()
     plt.show()
     
 def all_plot_from_bytes(data, scale=1.0, tickx=1000):
     for i in range(7):
-        plot_from_bytes(data, scale, i, i+1, tickx)
+        plot_from_bytes(data, scale, i, i+1, 0, tickx)
         sleep(0.1)
     
 # ---------------------------------------------------------
@@ -191,7 +300,7 @@ def start_gui(data):
     window.configure(bg="#222222")
 
     # --- CHECKBOX PANEL ---
-    tk.Label(window, text="Vyber bajty (bx << 8) | by",
+    tk.Label(window, text="Bajty b0 - b7",
              fg="white", bg="#222222", font=("Consolas", 12, "bold")).pack(pady=5)
 
     check_frame = tk.Frame(window, bg="#222222")
@@ -208,24 +317,24 @@ def start_gui(data):
         cb.grid(row=0, column=i, padx=3)
         byte_vars.append(var)
 
-    # --- SCALE (v jednom riadku) ---
-    scale_frame = tk.Frame(window, bg="#222222")
-    scale_frame.pack(pady=3)
+    # --- SCALE + OFFSET + TICKX  ---
+    params_frame = tk.Frame(window, bg="#222222")
+    params_frame.pack(pady=3)
 
-    tk.Label(scale_frame, text="Scale:", fg="white", bg="#222222").pack(side=tk.LEFT)
-    scale_entry = tk.Entry(scale_frame, width=8)
+    tk.Label(params_frame, text="Scale:", fg="white", bg="#222222").pack(side=tk.LEFT)
+    scale_entry = tk.Entry(params_frame, width=8)
     scale_entry.insert(0, "1.0")
     scale_entry.pack(side=tk.LEFT, padx=5)
-    
-    # --- TICKX (v jednom riadku) ---
-    tick_frame = tk.Frame(window, bg="#222222")
-    tick_frame.pack(pady=3)
 
-    tk.Label(tick_frame, text="TickX:", fg="white", bg="#222222").pack(side=tk.LEFT)
-    tick_entry = tk.Entry(tick_frame, width=8)
+    tk.Label(params_frame, text="Offset:", fg="white", bg="#222222").pack(side=tk.LEFT)
+    offset_entry = tk.Entry(params_frame, width=8)
+    offset_entry.insert(0, "0")
+    offset_entry.pack(side=tk.LEFT, padx=5)
+
+    tk.Label(params_frame, text="TickX:", fg="white", bg="#222222").pack(side=tk.LEFT)
+    tick_entry = tk.Entry(params_frame, width=8)
     tick_entry.insert(0, "1000")
     tick_entry.pack(side=tk.LEFT, padx=5)
-
 
     # --- LIST OF IDs ---
     tk.Label(window, text="CAN ID:", fg="white", bg="#222222",
@@ -257,6 +366,10 @@ def start_gui(data):
         try: scale = float(scale_entry.get())
         except: scale = 1.0
 
+        # scale
+        try: offset = float(offset_entry.get())
+        except: scale = 0.0
+
         # tickx
         try: tickx = int(tick_entry.get())
         except: tickx = 1000
@@ -266,15 +379,23 @@ def start_gui(data):
         if len(selected_bits) == 0:
             # no checkbox → original function
             plot_hex(filtered)
+        elif len(selected_bits) == 1:
+            # 1 checkboxes → new function
+            abit, = selected_bits
+            plot_from_byte(filtered, scale=scale, abit=abit, offset=offset, tickx=tickx)
         elif len(selected_bits) == 2:
             # 2 checkboxes → new function
             abit, bbit = selected_bits
-            plot_from_bytes(filtered, scale=scale, abit=abit, bbit=bbit, tickx=tickx)
+            plot_from_bytes(filtered, scale=scale, abit=abit, bbit=bbit, offset=offset, tickx=tickx)
+        elif len(selected_bits) == 3:
+            # 3 checkboxes → new function
+            abit, bbit, cbit  = selected_bits
+            plot_from_3bytes(filtered, scale=scale, abit=abit, bbit=bbit, cbit=cbit, tickx=tickx)
         elif len(selected_bits) == 8:
             # all checkboxes
             all_plot_from_bytes(filtered, scale=scale, tickx=tickx)
         else:
-            print("Vyber 0 alebo 2 D-bajty (b0..b7).")
+            print("Vyber 0 alebo 2 alebo 3 bajty (b0..b7).")
 
     # --- RADIOBUTTONS FOR IDs ---
     for cid, count in sorted_ids:
