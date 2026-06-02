@@ -47,6 +47,8 @@ uint8_t peerMAC[] = {0xE4, 0xB0, 0x63, 0x41, 0x32, 0x18}; // ESP PRIMAC E4:B0:63
 uint8_t obd_step = 0;
 int map_value = 0;
 float maf_value = 0;
+int speed_value = 0;
+
 
 //----------------------------------------------------------------
 // CAN (TWAI)
@@ -242,7 +244,10 @@ void write_buffer_bin() {
 }
 
 void write_buffer() {//csv
-  if (!sd_ok) return;
+  if (!sd_ok){
+    bufferIndex = 0; // reset buffer
+    return;
+  }
   if (bufferIndex == 0) return;
 
   fs::File file = SD_MMC.open("/canexbit.csv", FILE_APPEND);
@@ -488,13 +493,18 @@ void loop() {
           // 0x0B = MAP PID
           if (message.data[1] == 0x41 && message.data[2] == 0x0B) {
             map_value = message.data[3];  // MAP v kPa
+            sleep_timer = millis();
           }
           // 0x10 MAF
           if (message.data[1] == 0x41 && message.data[2] == 0x10) {
             maf_value = ((message.data[3] << 8) | message.data[4]) / 100.0;
+            sleep_timer = millis();
           }
         }
         // -----------------------------------------------
+        if(message.identifier == 0x00000201 && dlc >= 6){
+          speed_value = ((message.data[4] << 8) | message.data[5]) / 10.0;
+        }
 
         // timestamp (ms)
         buffer[bufferIndex].ts = millis();
@@ -530,11 +540,10 @@ void loop() {
       int val1 = random(40, 260); // <<<<< SIM
       int val2 = millis() / 1000;
 
-      send_2int(map_value, val2);
+      send_2int(map_value, speed_value);
       if(map_value != 0){
         tft.fillRect(0, 180, tft.width(), 20, TFT_ORANGE);
       }
-
 
       send_timer = millis();
       if(digitalRead(BOOT_BUTTON) == LOW){
@@ -573,7 +582,7 @@ void loop() {
     }
 
     if (millis() - sleep_timer > 60000) {
-      ;//sleep_now();
+      sleep_now();
     }
 
     // watchdog safe
@@ -626,7 +635,8 @@ void sleep_now() {
   digitalWrite(TFT_BL2, LOW); // off LCD LED
   pixels.clear();
   pixels.show();              // off RGB LED
-  esp_sleep_enable_timer_wakeup(10 * 1000000ULL);
+  //esp_sleep_enable_timer_wakeup(10 * 1000000ULL);
+  esp_sleep_enable_ext0_wakeup((gpio_num_t)BOOT_BUTTON, 0); // zobudenie pri LOW
   esp_deep_sleep_start();
 }
 
